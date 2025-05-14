@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CureVia - AI Health Assistant</title>
+  <style>
+    *{
+      margin:0%;
+      padding:0%;
+      box-sizing: border-box;
+    }
+    html,body{
+      height:100%;
+      width:100%
+    }
+    #main{
+      height: 100%;
+      width: 100%;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f7f7f7;
+    }
+    header {
+      background-color: #0EA5E9;
+      color: white;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      width: 100%;
+    }
+    .headerfack {
+        background-color: #0EA5E9;
+      color: white;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+    #logoimg {
+      height: 50px;
+      border-radius: 50%;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-right: 10px;
+      font-weight: bold;
+    }
+    .icon{
+      padding: 10px;
+      border-radius: 20px;
+      margin: 15px;
+      font-weight: bolder;
+    }
+    .icon:hover{
+      background: linear-gradient(to right, #e344b9, #3172eb);
+    }
+    .info-section {
+      background-color: #e0f4ff;
+      padding: 50px 20px;
+      text-align: center;
+    }
+    .info-section h1 {
+      color: #0EA5E9;
+      margin-bottom: 10px;
+    }
+    .info-section p {
+      color: #333;
+      font-size: 16px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    #chatbot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    h2 {
+      color: #0EA5E9;
+    }
+    input[type="text"], input[type="number"], textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    input[type="file"] {
+      margin: 10px 0;
+    }
+    button, input[type="submit"] {
+      padding: 10px 20px;
+      background-color: #0EA5E9;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .card {
+      background-color: #eef6fc;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    .treatment-list li {
+      margin-left: 20px;
+    }
+    footer {
+      text-align: center;
+      padding: 10px;
+      font-size: 12px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+   <div id="main">
+  <header>
+    <div><img id="logoimg" src="ps logo.png" alt="CureVia Logo"></div>
+    <nav>
+      <a class="icon" href="#">Home</a>
+      <a class="icon" href="#">Content</a>
+      <a class="icon" href="#">Contact Us</a>
+      <a class="icon" href="#">Founder</a>
+    </nav>
+  </header>
+  <div class="headerfack"> <p>hello</p></div>
+
+  <div class="info-section">
+    <h1>Welcome to CureVia</h1>
+    <p>Our mission is to use the power of AI to provide accessible, informative, and responsible health insights to everyone.</p>
+    <p>Get started by filling out the details below, or ask any health-related question directly.</p>
+  </div>
+
+  <div class="container">
+    <div id="chatbot">
+        <h2 style="margin:auto">AI Health Assistant</h2>
+        <img style="width: 20%;border-radius: 10px;" src="pngtree-chatbot-robot.png" alt="">
+    </div>
+
+    <form id="healthForm">
+      <label>Disease Name (optional):</label>
+      <input type="text" id="diseaseName" name="diseaseName">
+
+      <label>Affected Organs (optional):</label>
+      <input type="text" id="affectedOrgan" name="affectedOrgan">
+
+      <label>Age:</label>
+      <input type="number" id="age" name="age" required>
+
+      <label>Gender:</label><br>
+      Male <input type="radio" name="gender" value="male" required>
+      Female <input type="radio" name="gender" value="female" required>
+
+      <h3>Lab Reports (optional):</h3>
+      <label>PDF:</label>
+      <input type="file" accept="application/pdf">
+      <label>Image:</label>
+      <input type="file" accept="image/*">
+
+      <br><br>
+      <label>Symptoms:</label>
+      <textarea id="symptoms" name="symptoms" placeholder="Enter symptoms or ask anything" required></textarea>
+
+      <input type="submit" value="Submit">
+    </form>
+
+    <div class="card" id="result" style="display:none;">
+      <h2>Possible Disease: <span id="resultDisease"></span></h2>
+      <p>Confidence: <span id="resultConfidence"></span>%</p>
+      <p style="color: red;">Urgency: <span id="resultUrgency"></span></p>
+      <h3>Recommended Treatments:</h3>
+      <ul class="treatment-list" id="treatmentList"></ul>
+    </div>
+  </div>
+
+  <footer>
+    <p>Please note: This tool is not a substitute for professional medical advice. Always consult a qualified doctor.</p>
+  </footer>
+
+  <script>
+    document.getElementById("healthForm").addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  const diseaseName = document.getElementById("diseaseName").value;
+  const affectedOrgan = document.getElementById("affectedOrgan").value;
+  const age = document.getElementById("age").value;
+  const gender = document.querySelector('input[name="gender"]:checked').value;
+  const symptoms = document.getElementById("symptoms").value;
+
+  const requestData = {
+    diseaseName,
+    affectedOrgan,
+    age,
+    gender,
+    symptoms
+  };
+
+  try {
+    const response = await fetch('http://localhost:8080/analyze-health', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestData)
+    });
+
+    const data = await response.json();
+    document.getElementById("result").style.display = "block";
+    document.getElementById("resultDisease").innerText = "See below";
+    document.getElementById("resultConfidence").innerText = "N/A";
+    document.getElementById("resultUrgency").innerText = "N/A";
+
+    const list = document.getElementById("treatmentList");
+    list.innerHTML = "";
+    const lines = data.response.split('\n').filter(l => l.trim());
+
+    lines.forEach(line => {
+      if (line.toLowerCase().includes("treatment") || line.startsWith("-")) {
+        const li = document.createElement("li");
+        li.innerText = line.replace(/^[-•]\s*/, '');
+        list.appendChild(li);
+      }
+    });
+  } catch (error) {
+    alert("Failed to fetch AI results.");
+    console.error(error);
+  }
+});
+
+  </script>
+  </div>
+</body>
+</html>
+
